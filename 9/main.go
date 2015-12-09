@@ -3,7 +3,6 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"math"
 	"os"
 	"strconv"
 	"strings"
@@ -18,8 +17,25 @@ var (
 	G       = map[string][]Edge{}
 	seen    = map[string]bool{}
 	curDist = 0
-	minDist = math.MaxInt32
+	ans     = -1
 )
+
+func candidate() {
+	if ans == -1 {
+		ans = curDist
+		return
+	}
+	isPartTwo := true
+	if isPartTwo {
+		if curDist > ans {
+			ans = curDist
+		}
+	} else {
+		if curDist < ans {
+			ans = curDist
+		}
+	}
+}
 
 func dfs(n string) {
 	if seen[n] {
@@ -29,9 +45,7 @@ func dfs(n string) {
 	defer func() { delete(seen, n) }()
 
 	if len(seen) == len(G) {
-		if curDist < minDist {
-			minDist = curDist
-		}
+		candidate()
 		return
 	}
 
@@ -66,5 +80,5 @@ func main() {
 	for n := range G {
 		dfs(n)
 	}
-	fmt.Println(minDist)
+	fmt.Println(ans)
 }
