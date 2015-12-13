@@ -66,6 +66,14 @@ func main() {
 		}
 		l[y] = e
 	}
+	isPartTwo := true
+	if isPartTwo {
+		G[""] = map[string]int{}
+		for n := range G {
+			G[""][n] = 0
+			G[n][""] = 0
+		}
+	}
 	L = make([]string, len(G))
 	for n := range G {
 		dfs(n, 0)
