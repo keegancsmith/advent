@@ -7,12 +7,21 @@ import itertools
 def freeze(e, state):
     return (e, tuple(tuple(sorted(row)) for row in state))
 
+# Part b
 initial_state = freeze(0, [
-    ['PG', 'PM'],
+    ['PG', 'PM', 'EG', 'EM', 'DG', 'DM'],
     ['CG', 'cG', 'RG', 'pG'],
     ['CM', 'cM', 'RM', 'pM'],
     [],
 ])
+# Part a
+#initial_state = freeze(0, [
+#    ['PG', 'PM'],
+#    ['CG', 'cG', 'RG', 'pG'],
+#    ['CM', 'cM', 'RM', 'pM'],
+#    [],
+#])
+# Sample
 #initial_state = freeze(0, [
 #    ['HM', 'LM'],
 #    ['HG'],
