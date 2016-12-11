@@ -53,26 +53,21 @@ def next(state):
             yield (e2, tuple(new_row if i == e else (new_row2 if i == e2 else r)
                              for i, r in enumerate(rows)))
 
-def is_goal(state):
-    e, rows = state
-    return e == 3 and all(len(r) == 0 for r in rows[:-1])
+def goal(state):
+    r = state[1]
+    return (3, ((), (), (), tuple(sorted(r[0] + r[1] + r[2] + r[3]))))
     
 from collections import deque
-seen = set([initial_state])
-#parent = {initial_state: None}
-q = deque([(0, initial_state)])
+seen = [{initial_state: 0}, {goal(initial_state): 0}]
+q = deque([(0, 0, initial_state), (0, 1, goal(initial_state))])
 while q:
-    steps, state = q.popleft()
+    steps, si, state = q.popleft()
     steps += 1
     for n in next(state):
-        if n in seen:
+        if n in seen[si]:
             continue
-        #parent[n] = state
-        seen.add(n)
-        q.append((steps, n))
-        if is_goal(n):
-            print(steps)
-            #while n is not None:
-            #    print(n)
-            #    n = parent[n]
+        if n in seen[(si + 1) % 2]:
+            print(steps + seen[(si + 1 % 2)][n])
             exit(0)
+        seen[si][n] = steps
+        q.append((steps, si, n))
