@@ -9,6 +9,8 @@
 ;;
 ;; Ensure you have logged in with advent-login.  Once logged in, just call the
 ;; function advent.
+;;
+;; Demo at https://asciinema.org/a/ypGwNO8JyPpIEXz7CC7ZkaOFp
 
 ;;; Code:
 
