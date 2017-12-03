@@ -1,12 +1,28 @@
+;;; advent.el --- Advent of Code helpers
+
+;; Author: Keegan Carruthers-Smith
+
+;;; Commentary:
+
+;; Simple adventofcode.com helper which downloads todays input as well as open
+;; todays question.
+;;
+;; Ensure you have logged in with advent-login.  Once logged in, just call the
+;; function advent.
+
+;;; Code:
+
 (require 'url)
 
 (defun advent-login (session)
-  "Login to adventofcode.com"
+  "Login to adventofcode.com.
+Argument SESSION session cookie value."
   (interactive "sValue of session cookie from logged in browser: ")
   (url-cookie-store "session" session "Thu, 25 Dec 2027 20:17:36 -0000" ".adventofcode.com" "/" nil))
 
 (defun advent (&optional day)
-  "Loads todays adventofcode.com problem and input."
+  "Load todays adventofcode.com problem and input.
+Optional argument DAY Load this day instead.  Defaults to today."
   (interactive)
   (let ((day (or day (advent-day))))
     (delete-other-windows)
@@ -15,7 +31,8 @@
     (advent-input day)))
 
 (defun advent-input (&optional day)
-  "Loads todays adventofcode.com input in other window."
+  "Load todays adventofcode.com input in other window.
+Optional argument DAY Load this day instead.  Defaults to today."
   (interactive)
   (let* ((day (or day (advent-day)))
          (url (format "http://adventofcode.com/2017/day/%d/input" day))
@@ -36,3 +53,5 @@
 
 (defun advent-day ()
   (elt (decode-time (current-time)) 3))
+
+;;; advent.el ends here
