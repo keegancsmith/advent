@@ -14,6 +14,10 @@
 
 (require 'url)
 
+(defvar advent-dir
+  (expand-file-name "~/src/advent")
+  "The directory you are doing advent of code in.")
+
 (defun advent-login (session)
   "Login to adventofcode.com.
 Argument SESSION session cookie value."
@@ -36,7 +40,7 @@ Optional argument DAY Load this day instead.  Defaults to today."
   (interactive)
   (let* ((day (or day (advent-day)))
          (url (format "http://adventofcode.com/2017/day/%d/input" day))
-         (dir (format "/Users/keegan/src/advent/2017/%d" day))
+         (dir (format "%s/2017/%d" (expand-file-name advent-dir) day))
          (file (format "%s/input" dir)))
     (if (not (file-exists-p file))
         (url-retrieve url 'advent-download-callback (list file))
