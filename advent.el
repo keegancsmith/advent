@@ -58,6 +58,6 @@ Optional argument DAY Load this day instead.  Defaults to today."
     (find-file-other-window file)))
 
 (defun advent-day ()
-  (elt (decode-time (current-time)) 3))
+  (elt (decode-time (current-time) "America/New_York") 3))
 
 ;;; advent.el ends here
