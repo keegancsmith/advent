@@ -60,4 +60,9 @@ Optional argument DAY Load this day instead.  Defaults to today."
 (defun advent-day ()
   (elt (decode-time (current-time) "America/New_York") 3))
 
+;; TODO advent-submit
+;; http://adventofcode.com/2017/day/5/answer
+;; POST
+;; level=2&answer=29227751
+
 ;;; advent.el ends here
