@@ -1,6 +1,7 @@
 # Advent
 
-This repo contains my solutions to adventofcode.com
+This repo contains my solutions to the [Advent of
+Code](http://adventofcode.com).
 
 The code is written to optimize time to solution speed, since I like to try
 and compete on the leaderboard. As such the code shouldn't be taken as
