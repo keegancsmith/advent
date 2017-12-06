@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+# asciicast of me solving this at https://asciinema.org/a/JYydMvHuat7gDxaMKI9UUsAR0
+
 import bisect
 import fileinput
 import hashlib
