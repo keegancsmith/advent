@@ -16,5 +16,12 @@ try:
 except:
     pass
 
-for line in lines:
-    print(line)
+def solveA(lines):
+    for line in lines:
+        print(line)
+
+def solveB(lines):
+    pass
+
+print('A', solveA(lines))
+print('B', solveB(lines))
