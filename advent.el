@@ -5,7 +5,7 @@
 ;;; Commentary:
 
 ;; Simple adventofcode.com helper which downloads todays input as well as open
-;; todays question.
+;; todays question.  Also a helper to submit an answer.
 ;;
 ;; Ensure you have logged in with advent-login.  Once logged in, just call the
 ;; function advent.
@@ -30,25 +30,48 @@ Argument SESSION session cookie value."
   "Load todays adventofcode.com problem and input.
 Optional argument DAY Load this day instead.  Defaults to today."
   (interactive)
-  (let ((day (or day (advent-day))))
+  (let ((day (or day (advent--day))))
     (delete-other-windows)
     (split-window-right)
     (eww (format "http://adventofcode.com/2017/day/%d" day))
     (advent-input day)))
 
+(defun advent-submit (answer level &optional day)
+  "Submits ANSWER for LEVEL to todays adventofcode.com problem.
+Argument LEVEL is either 1 or 2.
+Optional argument DAY is the day to submit for.  Defaults to today."
+  (interactive
+   (list
+    ;; answer
+    (let ((answer-default (grep-tag-default)))
+      (read-string
+       (cond
+        ((and answer-default (> (length answer-default) 0))
+         (format "Submit (default %s): " answer-default))
+        (t "Submit: "))
+       nil nil answer-default))
+    ;; level
+    (read-string "Level (1 or 2): ")))
+  (let* ((day (or day (advent--day)))
+         (url (format "http://adventofcode.com/2017/day/%d/answer" day))
+         (url-request-method "POST")
+         (url-request-data (format "level=%s&answer=%s" level answer))
+         (url-request-extra-headers '(("Content-Type" . "application/x-www-form-urlencoded"))))
+    (eww-browse-url url)))
+
 (defun advent-input (&optional day)
   "Load todays adventofcode.com input in other window.
 Optional argument DAY Load this day instead.  Defaults to today."
   (interactive)
-  (let* ((day (or day (advent-day)))
+  (let* ((day (or day (advent--day)))
          (url (format "http://adventofcode.com/2017/day/%d/input" day))
          (dir (format "%s/2017/%d" (expand-file-name advent-dir) day))
          (file (format "%s/input" dir)))
     (if (not (file-exists-p file))
-        (url-retrieve url 'advent-download-callback (list file))
+        (url-retrieve url 'advent-download--callback (list file))
       (find-file-other-window file))))
 
-(defun advent-download-callback (status file)
+(defun advent-download--callback (status file)
   (if (plist-get status :error)
       (message "Failed to download todays advent %s" (plist-get status :error))
     (mkdir (file-name-directory file) t)
@@ -57,12 +80,7 @@ Optional argument DAY Load this day instead.  Defaults to today."
     (write-region (point) (point-max) file)
     (find-file-other-window file)))
 
-(defun advent-day ()
+(defun advent--day ()
   (elt (decode-time (current-time) "America/New_York") 3))
-
-;; TODO advent-submit
-;; http://adventofcode.com/2017/day/5/answer
-;; POST
-;; level=2&answer=29227751
 
 ;;; advent.el ends here
