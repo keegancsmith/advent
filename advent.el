@@ -43,7 +43,7 @@ Optional argument DAY is the day to submit for.  Defaults to today."
   (interactive
    (list
     ;; answer
-    (let ((answer-default (grep-tag-default)))
+    (let ((answer-default (advent--tag-default)))
       (read-string
        (cond
         ((and answer-default (> (length answer-default) 0))
@@ -68,10 +68,10 @@ Optional argument DAY Load this day instead.  Defaults to today."
          (dir (format "%s/2017/%d" (expand-file-name advent-dir) day))
          (file (format "%s/input" dir)))
     (if (not (file-exists-p file))
-        (url-retrieve url 'advent-download--callback (list file))
+        (url-retrieve url 'advent--download-callback (list file))
       (find-file-other-window file))))
 
-(defun advent-download--callback (status file)
+(defun advent--download-callback (status file)
   (if (plist-get status :error)
       (message "Failed to download todays advent %s" (plist-get status :error))
     (mkdir (file-name-directory file) t)
@@ -82,5 +82,15 @@ Optional argument DAY Load this day instead.  Defaults to today."
 
 (defun advent--day ()
   (elt (decode-time (current-time) "America/New_York") 3))
+
+(defun advent--tag-default ()
+  "Copied version of grep-tag-default."
+  (or (and transient-mark-mode mark-active
+	   (/= (point) (mark))
+	   (buffer-substring-no-properties (point) (mark)))
+      (funcall (or find-tag-default-function
+		   (get major-mode 'find-tag-default-function)
+		   'find-tag-default))
+      ""))
 
 ;;; advent.el ends here
