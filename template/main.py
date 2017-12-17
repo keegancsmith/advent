@@ -9,7 +9,7 @@ import json
 import re
 from collections import defaultdict, deque, namedtuple
 
-lines = [l.strip().split() for l in open('input').readlines() if l.strip()]
+lines = [l.strip().split() for l in open('input') if l.strip()]
 try:
     nums = [[int(x) for x in l] for l in lines]
     lines = nums
