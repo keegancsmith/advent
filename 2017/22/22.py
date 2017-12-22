@@ -4,10 +4,10 @@
 # https://asciinema.org/a/0ja296g1KGbDEnfrkRzq4egGz
 
 
-def solve(states, bursts, transitions):
+def solve(start, states, bursts, transitions):
     next_state = dict(zip(transitions, transitions[1:] + transitions))
     d = (-1, 0)
-    p = (len(lines) // 2, len(lines[0]) // 2)
+    p = start
     infected = 0
     for _ in range(bursts):
         state = states.get(p, 'clean')
@@ -32,13 +32,14 @@ def solve(states, bursts, transitions):
 
 
 states = {}
-for r, row in enumerate(open('input')):
+lines = [l.strip() for l in open('input')]
+for r, row in enumerate(lines):
     for c, v in enumerate(row.strip()):
         if v == '#':
             states[(r, c)] = 'infected'
 
-print('A', solve(dict(states), 10000, ['clean', 'infected']))
+start = (len(lines) // 2, len(lines[0]) // 2)
+print('A', solve(start, dict(states), 10000, ['clean', 'infected']))
 print('B',
-      solve(
-          dict(states), 10000000,
-          ['clean', 'weakened', 'infected', 'flagged']))
+      solve(start, dict(states), 10000000,
+            ['clean', 'weakened', 'infected', 'flagged']))
