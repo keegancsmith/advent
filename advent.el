@@ -33,7 +33,7 @@ Optional argument DAY Load this day instead.  Defaults to today."
   (let ((day (or day (advent--day))))
     (delete-other-windows)
     (split-window-right)
-    (eww (format "http://adventofcode.com/2017/day/%d" day))
+    (eww (format "http://adventofcode.com/2018/day/%d" day))
     (advent-input day)))
 
 (defun advent-submit (answer level &optional day)
@@ -53,7 +53,7 @@ Optional argument DAY is the day to submit for.  Defaults to today."
     ;; level
     (read-string "Level (1 or 2): ")))
   (let* ((day (or day (advent--day)))
-         (url (format "http://adventofcode.com/2017/day/%d/answer" day))
+         (url (format "http://adventofcode.com/2018/day/%d/answer" day))
          (url-request-method "POST")
          (url-request-data (format "level=%s&answer=%s" level answer))
          (url-request-extra-headers '(("Content-Type" . "application/x-www-form-urlencoded"))))
@@ -64,8 +64,8 @@ Optional argument DAY is the day to submit for.  Defaults to today."
 Optional argument DAY Load this day instead.  Defaults to today."
   (interactive)
   (let* ((day (or day (advent--day)))
-         (url (format "http://adventofcode.com/2017/day/%d/input" day))
-         (dir (format "%s/2017/%d" (expand-file-name advent-dir) day))
+         (url (format "http://adventofcode.com/2018/day/%d/input" day))
+         (dir (format "%s/2018/%d" (expand-file-name advent-dir) day))
          (file (format "%s/input" dir)))
     (if (not (file-exists-p file))
         (url-retrieve url 'advent--download-callback (list file))
