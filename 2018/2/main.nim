@@ -18,12 +18,12 @@ proc a(ids: seq[string]): int =
   return t2 * t3
 
 proc b(ids: seq[string]): string =
-  var seen = initSet[string]()
+  var seen = initSet[(string, string)]()
   for s in ids:
     for c in 0..len(s)-1:
-      let k = format("%s_%s", s[0..c], s[c+1..^1])
+      let k = (s[0..c-1], s[c+1..^1])
       if k in seen:
-        return s[0..c] & s[c+1..^1]
+        return k[0] & k[1]
       seen.incl(k)
 
 let ids = readFile("input").splitWhitespace
