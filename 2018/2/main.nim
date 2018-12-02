@@ -20,7 +20,7 @@ proc a(ids: seq[string]): int =
 proc b(ids: seq[string]): string =
   var seen = initSet[string]()
   for s in ids:
-    for c in 0..len(s):
+    for c in 0..len(s)-1:
       let k = format("%s_%s", s[0..c], s[c+1..^1])
       if k in seen:
         return s[0..c] & s[c+1..^1]
