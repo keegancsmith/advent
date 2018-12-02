@@ -1,50 +1,31 @@
 #!/usr/bin/env python3
 
-import bisect
-import fileinput
-import hashlib
-import heapq
-import itertools
-import json
-import re
-from collections import defaultdict, deque, namedtuple
+from collections import defaultdict
 
-lines = [l.strip().split() for l in open('input') if l.strip()]
-try:
-    nums = [[int(x) for x in l] for l in lines]
-    lines = nums
-except:
-    pass
+ids = [l.strip() for l in open('input') if l.strip()]
 
-def solveA(lines):
+def solveA(ids):
     t2 = 0
     t3 = 0
-    for line in lines:
+    for s in ids:
         d = defaultdict(int)
-        for c in line[0]:
+        for c in s:
             d[c]+=1
-        twice = False
-        thrice = False
-        for v in d.values():
-            if v == 2:
-                twice = True
-            if v == 3:
-                thrice = True
-        if twice:
+        counts = set(d.values())
+        if 2 in counts:
             t2 += 1
-        if thrice:
+        if 3 in counts:
             t3 += 1
     return t2 * t3
 
-def solveB(lines):
-    d = {}
-    for line in lines:
-        s = line[0]
-        for i in range(len(s) - 1):
+def solveB(ids):
+    seen = set()
+    for s in ids:
+        for i in range(len(s)):
             k = s[:i] + '_' + s[i+1:]
-            if k in d:
+            if k in seen:
                 return s[:i] + s[i+1:]
-            d[k] = s
+            seen.add(k)
 
-print('A', solveA(lines))
-print('B', solveB(lines))
+print('A', solveA(ids))
+print('B', solveB(ids))
