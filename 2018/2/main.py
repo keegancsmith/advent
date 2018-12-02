@@ -22,9 +22,9 @@ def solveB(ids):
     seen = set()
     for s in ids:
         for i in range(len(s)):
-            k = s[:i] + '_' + s[i+1:]
+            k = (s[:i], s[i+1:])
             if k in seen:
-                return s[:i] + s[i+1:]
+                return k[0] + k[1]
             seen.add(k)
 
 print('A', solveA(ids))
