@@ -20,6 +20,10 @@
   (expand-file-name "~/src/advent")
   "The directory you are doing advent of code in.")
 
+(defvar advent-src-template
+  (expand-file-name "~/src/advent/template/main.py")
+  "A file which is copied and opened for each day.")
+
 (defun advent-login (session)
   "Login to adventofcode.com.
 Argument SESSION session cookie value."
@@ -35,7 +39,9 @@ Optional argument DAY Load this day instead.  Defaults to today."
     (delete-other-windows)
     (split-window-right)
     (eww (format "https://adventofcode.com/%s/day/%d" year day))
-    (advent-input day)))
+    (advent-input day)
+    (split-window-below)
+    (advent-src day)))
 
 (defun advent-submit (answer level &optional day)
   "Submits ANSWER for LEVEL to todays adventofcode.com problem.
@@ -60,6 +66,19 @@ Optional argument DAY is the day to submit for.  Defaults to today."
          (url-request-data (format "level=%s&answer=%s" level answer))
          (url-request-extra-headers '(("Content-Type" . "application/x-www-form-urlencoded"))))
     (eww-browse-url url)))
+
+(defun advent-src (&optional day)
+  "Open source file for DAY. If it doesn't exist, it is created from 'advent-src-template'"
+  (interactive)
+  (let* ((year (format-time-string "%Y"))
+         (day (or day (advent--day)))
+         (dir (format "%s/%s/%d" (expand-file-name advent-dir) year day))
+         (ext (file-name-extension advent-src-template))
+         (file (format "%s/%d.%s" dir day ext)))
+    (if (and (not (file-exists-p file))
+             (file-exists-p advent-src-template))
+        (copy-file advent-src-template file))
+    (find-file file)))
 
 (defun advent-input (&optional day)
   "Load todays adventofcode.com input in other window.
