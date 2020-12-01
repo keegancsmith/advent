@@ -30,10 +30,11 @@ Argument SESSION session cookie value."
   "Load todays adventofcode.com problem and input.
 Optional argument DAY Load this day instead.  Defaults to today."
   (interactive)
-  (let ((day (or day (advent--day))))
+  (let ((year (format-time-string "%Y"))
+        (day (or day (advent--day))))
     (delete-other-windows)
     (split-window-right)
-    (eww (format "http://adventofcode.com/2019/day/%d" day))
+    (eww (format "http://adventofcode.com/%s/day/%d" year day))
     (advent-input day)))
 
 (defun advent-submit (answer level &optional day)
@@ -52,8 +53,9 @@ Optional argument DAY is the day to submit for.  Defaults to today."
        nil nil answer-default))
     ;; level
     (read-string "Level (1 or 2): ")))
-  (let* ((day (or day (advent--day)))
-         (url (format "http://adventofcode.com/2019/day/%d/answer" day))
+  (let* ((year (format-time-string "%Y"))
+         (day (or day (advent--day)))
+         (url (format "http://adventofcode.com/%s/day/%d/answer" year day))
          (url-request-method "POST")
          (url-request-data (format "level=%s&answer=%s" level answer))
          (url-request-extra-headers '(("Content-Type" . "application/x-www-form-urlencoded"))))
@@ -63,9 +65,10 @@ Optional argument DAY is the day to submit for.  Defaults to today."
   "Load todays adventofcode.com input in other window.
 Optional argument DAY Load this day instead.  Defaults to today."
   (interactive)
-  (let* ((day (or day (advent--day)))
-         (url (format "http://adventofcode.com/2019/day/%d/input" day))
-         (dir (format "%s/2019/%d" (expand-file-name advent-dir) day))
+  (let* ((year (format-time-string "%Y"))
+         (day (or day (advent--day)))
+         (url (format "http://adventofcode.com/%s/day/%d/input" year day))
+         (dir (format "%s/%s/%d" (expand-file-name advent-dir) year day))
          (file (format "%s/input" dir)))
     (if (not (file-exists-p file))
         (url-retrieve url 'advent--download-callback (list file))
