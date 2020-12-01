@@ -24,7 +24,7 @@
   "Login to adventofcode.com.
 Argument SESSION session cookie value."
   (interactive "sValue of session cookie from logged in browser: ")
-  (url-cookie-store "session" session "Thu, 25 Dec 2027 20:17:36 -0000" ".adventofcode.com" "/" nil))
+  (url-cookie-store "session" session "Thu, 25 Dec 2027 20:17:36 -0000" ".adventofcode.com" "/" t))
 
 (defun advent (&optional day)
   "Load todays adventofcode.com problem and input.
@@ -34,7 +34,7 @@ Optional argument DAY Load this day instead.  Defaults to today."
         (day (or day (advent--day))))
     (delete-other-windows)
     (split-window-right)
-    (eww (format "http://adventofcode.com/%s/day/%d" year day))
+    (eww (format "https://adventofcode.com/%s/day/%d" year day))
     (advent-input day)))
 
 (defun advent-submit (answer level &optional day)
@@ -55,7 +55,7 @@ Optional argument DAY is the day to submit for.  Defaults to today."
     (read-string "Level (1 or 2): ")))
   (let* ((year (format-time-string "%Y"))
          (day (or day (advent--day)))
-         (url (format "http://adventofcode.com/%s/day/%d/answer" year day))
+         (url (format "https://adventofcode.com/%s/day/%d/answer" year day))
          (url-request-method "POST")
          (url-request-data (format "level=%s&answer=%s" level answer))
          (url-request-extra-headers '(("Content-Type" . "application/x-www-form-urlencoded"))))
@@ -67,7 +67,7 @@ Optional argument DAY Load this day instead.  Defaults to today."
   (interactive)
   (let* ((year (format-time-string "%Y"))
          (day (or day (advent--day)))
-         (url (format "http://adventofcode.com/%s/day/%d/input" year day))
+         (url (format "https://adventofcode.com/%s/day/%d/input" year day))
          (dir (format "%s/%s/%d" (expand-file-name advent-dir) year day))
          (file (format "%s/input" dir)))
     (if (not (file-exists-p file))
