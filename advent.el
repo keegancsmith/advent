@@ -33,7 +33,7 @@ Argument SESSION session cookie value."
 (defun advent (&optional day)
   "Load todays adventofcode.com problem and input.
 Optional argument DAY Load this day instead.  Defaults to today."
-  (interactive)
+  (interactive "P")
   (let ((year (format-time-string "%Y"))
         (day (or day (advent--day))))
     (delete-other-windows)
@@ -69,7 +69,7 @@ Optional argument DAY is the day to submit for.  Defaults to today."
 
 (defun advent-src (&optional day)
   "Open source file for DAY. If it doesn't exist, it is created from 'advent-src-template'"
-  (interactive)
+  (interactive "P")
   (let* ((year (format-time-string "%Y"))
          (day (or day (advent--day)))
          (dir (format "%s/%s/%d" (expand-file-name advent-dir) year day))
@@ -83,7 +83,7 @@ Optional argument DAY is the day to submit for.  Defaults to today."
 (defun advent-input (&optional day)
   "Load todays adventofcode.com input in other window.
 Optional argument DAY Load this day instead.  Defaults to today."
-  (interactive)
+  (interactive "P")
   (let* ((year (format-time-string "%Y"))
          (day (or day (advent--day)))
          (url (format "https://adventofcode.com/%s/day/%d/input" year day))
