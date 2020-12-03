@@ -16,7 +16,10 @@ def solveA(lines):
 def solveB(lines):
     pass
 
-lines = [l.strip().split() for l in open('input') if l.strip()]
+data = '''
+'''
+# data = open('input').read()
+lines = [l.strip().split() for l in data.readlines() if l.strip()]
 try:
     nums = [[int(x) for x in l] for l in lines]
     lines = nums
