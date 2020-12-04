@@ -19,7 +19,7 @@ def solveB(lines):
 data = '''
 '''
 # data = open('input').read()
-lines = [l.strip().split() for l in data.readlines() if l.strip()]
+lines = [l.strip().split() for l in data.splitlines() if l.strip()]
 try:
     nums = [[int(x) for x in l] for l in lines]
     lines = nums
