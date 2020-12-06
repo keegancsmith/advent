@@ -2,13 +2,8 @@
 
 from functools import reduce
 
-groups = [[]]
-for line in open('input'):
-    line = line.strip()
-    if line:
-        groups[-1].append(set(line))
-    else:
-        groups.append([])
+data = open('input').read()
+groups = [[set(line) for line in group.split()] for group in data.split('\n\n')]
 
 print("A", sum(len(reduce(set.union,        group)) for group in groups))
 print("B", sum(len(reduce(set.intersection, group)) for group in groups))
