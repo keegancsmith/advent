@@ -75,9 +75,10 @@ Optional argument DAY is the day to submit for.  Defaults to today."
          (dir (format "%s/%s/%d" (expand-file-name advent-dir) year day))
          (ext (file-name-extension advent-src-template))
          (file (format "%s/%d.%s" dir day ext)))
-    (if (and (not (file-exists-p file))
-             (file-exists-p advent-src-template))
-        (copy-file advent-src-template file))
+    (when (and (not (file-exists-p file))
+               (file-exists-p advent-src-template))
+      (mkdir dir t)
+      (copy-file advent-src-template file))
     (find-file file)))
 
 (defun advent-input (&optional day)
