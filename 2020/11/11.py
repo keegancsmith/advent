@@ -1,66 +1,40 @@
 #!/usr/bin/env python3
 
-import bisect
-import fileinput
-import hashlib
-import heapq
 import itertools
-import json
-import re
-from collections import defaultdict, deque, namedtuple
+from collections import defaultdict
 
-def count_adjacent(state, x, y):
-    c = 0
-    for dx in range(-1, 2):
-        for dy in range(-1, 2):
-            if dx == dy == 0:
-                continue
-            x1, y1 = x + dx, y + dy
-            if 0 <= x1 < len(state) and 0 <= y1 < len(state[x1]) and state[x1][y1] == '#':
-                c += 1
-    return c
-
-# * If a seat is empty (L) and there are no occupied seats adjacent to it, the seat becomes occupied.
-# * If a seat is occupied (#) and four or more seats adjacent to it are also occupied, the seat becomes empty.
-# * Otherwise, the seat's state does not change.
-def next_cell(state, x, y):
-    v = state[x][y]
-    if v == 'L':
-        return '#' if count_adjacent(state, x, y) == 0 else 'L'
-    elif v == '#':
-        return '#' if count_adjacent(state, x, y) < 4 else 'L'
-    else:
-        return v
-
-def solveA(lines):
-    last = tuple()
-    state = tuple(tuple(l) for l in lines)
+def solveA(state):
     while True:
-        next_state = tuple(tuple(next_cell(state, x, y) for y in range(len(state[0]))) for x in range(len(state)))
-        if state == next_state:
+        next_state = {}
+        for (x, y), v in state.items():
+            neigh = ((x + dx, y + dy) for dx, dy in itertools.product(range(-1, 2), range(-1, 2)) if not (dx == dy == 0))
+            c = [state.get(k, '.') for k in neigh].count('#')
+            if v == 'L':
+                next_state[(x, y)] = '#' if c == 0 else 'L'
+            elif v == '#':
+                next_state[(x, y)] = '#' if c < 4 else 'L'
+
+        if next_state == state:
             break
         state = next_state
-    return sum(row.count('#') for row in state)
 
-def solveB(lines):
+    return list(state.values()).count('#')
+
+def solveB(state):
+    # Create an adjacency list based on visibility
+    maxX = max(x for (x, y) in state)
+    maxY = max(y for (x, y) in state)
     G = defaultdict(list)
-    state = {}
-    for x, line in enumerate(lines):
-        for y, v in enumerate(line):
-            if v == '.':
+    for (x, y), v in state.items():
+        for dx, dy in itertools.product(range(-1, 2), range(-1, 2)):
+            if dx == dy == 0:
                 continue
-            state[(x, y)] = v
-            
-            for dx in range(-1, 2):
-                for dy in range(-1, 2):
-                    if dx == dy == 0:
-                        continue
-                    x1, y1 = x + dx, y + dy
-                    while 0 <= x1 < len(lines) and 0 <= y1 < len(lines[x1]):
-                        if lines[x1][y1] != '.':
-                            G[(x, y)].append((x1, y1))
-                            break
-                        x1, y1 = x1 + dx, y1 + dy
+            x1, y1 = x, y
+            while 0 <= x1 <= maxX and 0 <= y1 <= maxY:
+                x1, y1 = x1 + dx, y1 + dy
+                if (x1, y1) in state:
+                    G[(x, y)].append((x1, y1))
+                    break
 
     while True:
         next_state = {}
@@ -70,33 +44,15 @@ def solveB(lines):
                 next_state[pos] = '#' if c == 0 else 'L'
             elif v == '#':
                 next_state[pos] = '#' if c < 5 else 'L'
-            else:
-                assert False
+
         if next_state == state:
             break
         state = next_state
-            
+
     return list(state.values()).count('#')
 
-data = '''L.LL.LL.LL
-LLLLLLL.LL
-L.L.L..L..
-LLLL.LL.LL
-L.LL.LL.LL
-L.LLLLL.LL
-..L.L.....
-LLLLLLLLLL
-L.LLLLLL.L
-L.LLLLL.LL'''
-data = open('input').read()
-lines = [l.strip().split() for l in data.splitlines() if l.strip()]
-try:
-    nums = [[int(x) for x in l] for l in lines]
-    lines = nums
-except:
-    pass
-if all(len(l) == 1 for l in lines):
-    lines = [l[0] for l in lines]
+lines = [l.strip() for l in open('input') if l.strip()]
+initial = {(x, y): v for x, line in enumerate(lines) for y, v in enumerate(line) if v != '.'}
 
-print('A', solveA(lines))
-print('B', solveB(lines))
+print('A', solveA(initial.copy()))
+print('B', solveB(initial.copy()))
