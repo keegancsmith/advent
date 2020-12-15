@@ -1,21 +1,19 @@
 #!/usr/bin/env python3
 
-from collections import defaultdict
-
-
 def solveA(nums, turns=2020):
-    spoken_turns = defaultdict(list)
+    last_turn = {}
     last_spoken = None
     for turn, n in enumerate(nums):
-        spoken_turns[n].append(turn + 1)
+        last_turn[n] = turn + 1
         last_spoken = n
+    del(last_turn[nums[-1]])
 
     for turn in range(len(nums) + 1, turns + 1):
-        if len(spoken_turns[last_spoken]) == 1:
-            speak = 0
+        if last_spoken in last_turn:
+            speak = turn - 1 - last_turn[last_spoken]
         else:
-            speak = spoken_turns[last_spoken][-1] - spoken_turns[last_spoken][-2]
-        spoken_turns[speak].append(turn)
+            speak = 0
+        last_turn[last_spoken] = turn - 1
         last_spoken = speak
     return speak
 
