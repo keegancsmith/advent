@@ -17,6 +17,20 @@ def evalA(expr):
     return tokens[0]
 
 def evalB(expr):
+    # Note to future self. cpbotha pointed out there is a nice hack to insert
+    # parens to force precedence
+    # https://en.wikipedia.org/wiki/Operator-precedence_parser#Alternative_methods
+    cpbotha = False
+    if cpbotha:
+        return str(eval(
+            '((('
+            + expr.replace('(', '(((')
+            .replace(')', ')))')
+            .replace('+', ')+(')
+            .replace('*', '))*((')
+            + ')))'
+        ))
+
     while ')' in expr:
         r = expr.index(')')
         l = expr.rindex('(', 0, r)
