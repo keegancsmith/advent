@@ -1,123 +1,8 @@
 #!/usr/bin/env python3
 
-import bisect
-import fileinput
-import hashlib
-import heapq
-import itertools
-import json
-import re
-from collections import defaultdict, deque, namedtuple
+import math
+from collections import defaultdict
 
-data = '''
-Tile 2311:
-..##.#..#.
-##..#.....
-#...##..#.
-####.#...#
-##.##.###.
-##...#.###
-.#.#.#..##
-..#....#..
-###...#.#.
-..###..###
-
-Tile 1951:
-#.##...##.
-#.####...#
-.....#..##
-#...######
-.##.#....#
-.###.#####
-###.##.##.
-.###....#.
-..#.#..#.#
-#...##.#..
-
-Tile 1171:
-####...##.
-#..##.#..#
-##.#..#.#.
-.###.####.
-..###.####
-.##....##.
-.#...####.
-#.##.####.
-####..#...
-.....##...
-
-Tile 1427:
-###.##.#..
-.#..#.##..
-.#.##.#..#
-#.#.#.##.#
-....#...##
-...##..##.
-...#.#####
-.#.####.#.
-..#..###.#
-..##.#..#.
-
-Tile 1489:
-##.#.#....
-..##...#..
-.##..##...
-..#...#...
-#####...#.
-#..#.#.#.#
-...#.#.#..
-##.#...##.
-..##.##.##
-###.##.#..
-
-Tile 2473:
-#....####.
-#..#.##...
-#.##..#...
-######.#.#
-.#...#.#.#
-.#########
-.###.#..#.
-########.#
-##...##.#.
-..###.#.#.
-
-Tile 2971:
-..#.#....#
-#...###...
-#.#.###...
-##.##..#..
-.#####..##
-.#..####.#
-#..#.#..#.
-..####.###
-..#.#.###.
-...#.#.#.#
-
-Tile 2729:
-...#.#.#.#
-####.#....
-..#.#.....
-....#..#.#
-.##..##.#.
-.#.####...
-####.#.#..
-##.####...
-##..#.##..
-#.##...##.
-
-Tile 3079:
-#.#.#####.
-.#..######
-..#.......
-######....
-####.#..#.
-.#...#.##.
-#.#####.##
-..#.###...
-..#.......
-..#.###...
-'''
 data = open('input').read()
 
 size = 0
@@ -187,10 +72,10 @@ def adjacent(k, tile, dimension):
 
 def valid_orientation(k, tile):
     corners = []
-    last = None
+    image = []
     for i in range(total_size):
-        if last is not None:
-            k, tile = last[0]
+        if image:
+            k, tile = image[-1][0]
             k, tile = adjacent(k, tile, 1)
             if k is None:
                 #print("no down adj")
@@ -202,12 +87,13 @@ def valid_orientation(k, tile):
                 #print("no left adj")
                 return None
             cur.append((k, tile))
-            if last is not None:
-                k2, _ = adjacent(last[j][0], last[j][1], 1)
+            if image:
+                k2, tile2 = image[-1][j]
+                k2, _ = adjacent(k2, tile2, 1)
                 if k2 != k:
                     #print("mismatch down adj")
                     return None
-        last = cur
+        image.append(cur)
         #print()
         #print_tile(*(t for k, t in cur))
         if i in (0, total_size - 1):
@@ -216,7 +102,7 @@ def valid_orientation(k, tile):
     ans = 1
     for c in corners:
         ans *= c
-    return ans
+    return ans, [[t for _, t in row] for row in image]
 
 def valid(k):
     for tile in orientations(tiles[k]):
@@ -227,6 +113,54 @@ def valid(k):
 for k in tiles:
     ans = valid(k)
     if ans is not None:
-        print(ans)
+        print('A', ans[0])
+        image = ans[1]
         break
 
+image_rows = []
+for tiles in image:
+    for y in range(size-2):
+        rows = []
+        for tile in tiles:
+            rows.append(''.join('#' if (x+1, y+1) in tile else '.' for x in range(size-2)))
+        row = ''.join(rows)
+        image_rows.append(row)
+size = len(row)
+assert len(row) == len(image_rows)
+
+
+active = set()
+for y, row in enumerate(image_rows):
+    for x, v in enumerate(row):
+        if v == '#':
+            active.add((x, y))
+
+
+monster = (
+    (0, 0),
+    (1, 1),
+    (4, 1),
+    (5, 0),
+    (6, 0),
+    (7, 1),
+    (10, 1),
+    (11, 0),
+    (12, 0),
+    (13, 1),
+    (16, 1),
+    (17, 0),
+    (18, -1),
+    (18, 0),
+    (19, 0),
+)
+
+for tile in orientations(active):
+    active = set(tile)
+    rough = set(tile)
+    for x, y in active:
+        m = set((x + dx, y + dy) for dx, dy in monster)
+        if m < active:
+            for p in m:
+                rough.discard(p)
+    if len(rough) != len(active):
+        print("B", len(rough))
