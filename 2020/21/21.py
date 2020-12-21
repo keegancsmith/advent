@@ -1,34 +1,10 @@
 #!/usr/bin/env python3
 
-import bisect
-import fileinput
-import hashlib
-import heapq
 import itertools
-import json
-import re
-from collections import defaultdict, deque, namedtuple
-
-def solveA(lines):
-    for line in lines:
-        print(line)
-
-def solveB(lines):
-    pass
-
-data = '''
-mxmxvkd kfcds sqjhc nhms (contains dairy, fish)
-trh fvjkl sbzzf mxmxvkd (contains dairy)
-sqjhc fvjkl (contains soy)
-sqjhc mxmxvkd sbzzf (contains fish)
-'''
-data = open('input').read()
+from collections import defaultdict
 
 foods = []
-for line in data.splitlines():
-    line = line.strip()
-    if not line:
-        continue
+for line in open('input').read().strip().splitlines():
     ingredients, allergens = line.split('(contains')
     ingredients = set(ingredients.split())
     allergens = set(allergens.strip(')').strip().split(', '))
@@ -42,8 +18,8 @@ for ingredients, allergens in foods:
         else:
             A[a] = ingredients
 
-all_ingredients = set(itertools.chain(*(ing for ing, _ in foods)))
-dangerous = set(itertools.chain(*A.values()))
+all_ingredients = set(itertools.chain.from_iterable(ing for ing, _ in foods))
+dangerous = set(itertools.chain.from_iterable(A.values()))
 ansA = 0
 for ing in all_ingredients - dangerous:
     ansA += sum(ing in ings for ings, _ in foods)
