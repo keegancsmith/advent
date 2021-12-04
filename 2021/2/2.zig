@@ -9,7 +9,7 @@ const Direction = enum {
 
 const Command = struct {
     direction: Direction,
-    value: u32,
+    value: i64,
 };
 
 fn parseCommand(line: []const u8) !Command {
@@ -30,9 +30,9 @@ fn parseCommand(line: []const u8) !Command {
         return error.InvalidCharacter;
     }
 
-    var value: u32 = undefined;
+    var value: i64 = undefined;
     if (it.next()) |str| {
-        value = try std.fmt.parseInt(u32, str, 10);
+        value = try std.fmt.parseInt(i64, str, 10);
     } else {
         return error.InvalidCharacter;
     }
@@ -58,7 +58,7 @@ fn part1(commands: []const Command) i64 {
     var x: i64 = 0;
     var y: i64 = 0;
     for (commands) |command| {
-        const v = @as(i64, command.value);
+        const v = command.value;
         switch (command.direction) {
             Direction.forward => x += v,
             Direction.up => y -= v,
@@ -73,7 +73,7 @@ fn part2(commands: []const Command) i64 {
     var x: i64 = 0;
     var y: i64 = 0;
     for (commands) |command| {
-        const v = @as(i64, command.value);
+        const v = command.value;
         switch (command.direction) {
             Direction.forward => {
                 x += aim * v;
