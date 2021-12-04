@@ -2,3 +2,4 @@ main
 *.out
 .direnv
 .envrc
+zig-cache

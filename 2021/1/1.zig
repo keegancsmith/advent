@@ -4,7 +4,7 @@ pub fn main() !void {
     const stdin = std.io.getStdIn().reader();
     const stdout = std.io.getStdOut().writer();
     var buf: [1024]u8 = undefined;
-    var last: [3]u64 = .{1 << 63, 1 << 63, 1 << 63};
+    var last: [3]u64 = .{ 1 << 63, 1 << 63, 1 << 63 };
     var count1: u64 = 0;
     var count2: u64 = 0;
     while (try stdin.readUntilDelimiterOrEof(&buf, '\n')) |line| {
@@ -20,5 +20,5 @@ pub fn main() !void {
         last[1] = last[2];
         last[2] = n;
     }
-    try stdout.print("Part 1: {}\nPart 2: {}\n", .{count1, count2});
+    try stdout.print("Part 1: {}\nPart 2: {}\n", .{ count1, count2 });
 }
