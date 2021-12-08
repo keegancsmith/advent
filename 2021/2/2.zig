@@ -30,12 +30,7 @@ fn parseCommand(line: []const u8) !Command {
         return error.InvalidCharacter;
     }
 
-    var value: i64 = undefined;
-    if (it.next()) |str| {
-        value = try std.fmt.parseInt(i64, str, 10);
-    } else {
-        return error.InvalidCharacter;
-    }
+    const value = if (it.next()) |str| try std.fmt.parseInt(i64, str, 10) else return error.InvalidCharacter;
 
     return Command{
         .direction = direction,
