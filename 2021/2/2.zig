@@ -12,23 +12,22 @@ const Command = struct {
     value: i64,
 };
 
-fn parseCommand(line: []const u8) !Command {
-    var it = std.mem.tokenize(line, " \n");
-
-    var direction: Direction = undefined;
-    if (it.next()) |str| {
-        if (std.mem.eql(u8, str, "forward")) {
-            direction = Direction.forward;
-        } else if (std.mem.eql(u8, str, "up")) {
-            direction = Direction.up;
-        } else if (std.mem.eql(u8, str, "down")) {
-            direction = Direction.down;
-        } else {
-            return error.InvalidCharacter;
-        }
+fn parseDirection(str: []const u8) !Direction {
+    if (std.mem.eql(u8, str, "forward")) {
+        return Direction.forward;
+    } else if (std.mem.eql(u8, str, "up")) {
+        return Direction.up;
+    } else if (std.mem.eql(u8, str, "down")) {
+        return Direction.down;
     } else {
         return error.InvalidCharacter;
     }
+}
+
+fn parseCommand(line: []const u8) !Command {
+    var it = std.mem.tokenize(line, " \n");
+
+    const direction = if (it.next()) |str| try parseDirection(str) else return error.InvalidCharacter;
 
     const value = if (it.next()) |str| try std.fmt.parseInt(i64, str, 10) else return error.InvalidCharacter;
 
